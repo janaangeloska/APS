@@ -197,7 +197,7 @@ public class ConsecutiveNumbers {
 
         while (curr != null || !stack.isEmpty()) {
             if (curr != null) {
-                list.insertFirst(curr.info);
+                list.insertLast(curr.info);
                 stack.push(curr.right);
                 curr = curr.left;
             } else {
@@ -206,13 +206,13 @@ public class ConsecutiveNumbers {
         }
     }
     private static boolean preorderCheck(SLL<Integer> list) {
-        SLLNode<Integer> current = list.first;
+        SLLNode<Integer> curr = list.first;
 
-        while (current.succ != null) {
-            if (Math.abs(current.element - current.succ.element) != 2) {
+        while (curr.succ != null) {
+            if (curr.succ.element - curr.element != 2) {
                 return false;
             }
-            current = current.succ;
+            curr = curr.succ;
         }
 
         return true;
