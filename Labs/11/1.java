@@ -8,9 +8,6 @@ Input: In the first line you are given the number of cities N. In the second lin
 Output: In the first line of the output you are supposed to print the route which you are supposed to take starting from the starting city and ending at the destination city. In the second line you are supposed to print the route which you are supposed to take starting from the destination city and ending at the starting city. In the last line of the output you are supposed to print a single integer representing the total length of the routes.
 */
 
-
-//package labs.labs11;
-
 import java.util.*;
 
 class AdjacencyListGraph<T> {
@@ -20,24 +17,19 @@ class AdjacencyListGraph<T> {
         this.adjacencyList = new HashMap<>();
     }
 
-    // Add a vertex to the graph
     public void addVertex(T vertex) {
         if (!adjacencyList.containsKey(vertex)) {
             adjacencyList.put(vertex, new HashMap<>());
         }
     }
 
-    // Remove a vertex from the graph
     public void removeVertex(T vertex) {
-        // Remove the vertex from all adjacency lists
         for (Map<T, Double> neighbors : adjacencyList.values()) {
             neighbors.remove(vertex);
         }
-        // Remove the vertex's own entry in the adjacency list
         adjacencyList.remove(vertex);
     }
 
-    // Add an edge to the graph
     public void addEdge(T source, T destination, double weight) {
         addVertex(source);
         addVertex(destination);
@@ -45,7 +37,6 @@ class AdjacencyListGraph<T> {
         adjacencyList.get(source).put(destination, weight);
     }
 
-    // Remove an edge from the graph
     public void removeEdge(T source, T destination) {
         if (adjacencyList.containsKey(source)) {
             adjacencyList.get(source).remove(destination);
@@ -55,7 +46,6 @@ class AdjacencyListGraph<T> {
 //        }
     }
 
-    // Get all neighbors of a vertex
     public Map<T, Double> getNeighbors(T vertex) {
         return adjacencyList.getOrDefault(vertex, new HashMap<>());
     }
@@ -66,11 +56,9 @@ class AdjacencyListGraph<T> {
     }
 
     private void DFSUtil(T vertex, Set<T> visited) {
-        // Mark the current node as visited and print it
         visited.add(vertex);
         System.out.print(vertex + " ");
 
-        // Recur for all the vertices adjacent to this vertex
         for (T neighbor : getNeighbors(vertex).keySet()) {
             if (!visited.contains(neighbor)) {
                 DFSUtil(neighbor, visited);
@@ -115,6 +103,7 @@ class AdjacencyListGraph<T> {
             return second;
         }
     }
+    
     public void printPath(T source, T destination, Map<T, String> cityNames) {
         Map<T, T> previousVertices = new HashMap<>();
         Set<T> visited = new HashSet<>();
@@ -177,7 +166,6 @@ class AdjacencyListGraph<T> {
         PriorityQueue<T> queue = new PriorityQueue<>(Comparator.comparingDouble(distances::get));
         Set<T> explored = new HashSet<>();
 
-        // Initialize distances
         for (T vertex : adjacencyList.keySet()) {
             distances.put(vertex, Double.MAX_VALUE);
         }
@@ -196,8 +184,6 @@ class AdjacencyListGraph<T> {
                 if (newDist < distances.get(neighbor)) {
                     distances.put(neighbor, newDist);
 
-
-                    // Update priority queue
                     if (!explored.contains(neighbor)) {
                         queue.add(neighbor);
                     }
@@ -222,20 +208,15 @@ class AdjacencyListGraph<T> {
 public class MapaPatishta {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        AdjacencyListGraph<Integer> mapa=new AdjacencyListGraph<>();
+        AdjacencyListGraph<Integer> map=new AdjacencyListGraph<>();
 //        број на градови N
         int N = Integer.parseInt(sc.nextLine());
-//        zachuvuvanje na vrednosta od teminjata
-        String [] vrednosti=new String[N];
 //        бројот на насочени патишта
-        int patishta = Integer.parseInt(sc.nextLine());
+        int roads = Integer.parseInt(sc.nextLine());
         Map<Integer, String> cityNames = new HashMap<>();
+//        реден број на почетниот град, име на почетниот град, реден број на крајниот град, име на крајниот град, должина на патот.
 
-        for (int i = 0; i < N; i++) {
-            mapa.addVertex(i);
-        }
-
-        for (int i = 0; i < patishta; i++) {
+        for (int i = 0; i < roads; i++) {
             String line = sc.nextLine();
             String[] parts = line.split("\\s+");
 
@@ -247,28 +228,29 @@ public class MapaPatishta {
             //mapa so values iminja na gradovi i nivnite teminja kako keys
             cityNames.put(startCity, startCityName);
             cityNames.put(endCity, endCityName);
-            //dodavame rab i negova tezhina
-            mapa.addEdge(startCity, endCity, pathLength);
+            //dodavame rebro i negova tezhina
+            map.addEdge(startCity, endCity, pathLength);
         }
-        String grad1=sc.nextLine();
-        String grad2=sc.nextLine();
+        String city1=sc.nextLine();
+        String city2=sc.nextLine();
         int key1=-1,key2=-1;
         for(Map.Entry<Integer, String> entry: cityNames.entrySet()) {
-            if(entry.getValue().equals(grad1)) {
+            if(entry.getValue().equals(city1)) {
                 key1= entry.getKey();
             }
-            if(entry.getValue().equals(grad2)) {
+            if(entry.getValue().equals(city2)) {
                 key2= entry.getKey();
             }
         }
-        Map<Integer, Double> path1 = mapa.shortestPath(key1);
-        Map<Integer, Double> path2 = mapa.shortestPath(key2);
+        Map<Integer, Double> path1 = map.shortestPath(key1);
+        Map<Integer, Double> path2 = map.shortestPath(key2);
 
-        mapa.printPath(key1, key2, cityNames);
+        map.printPath(key1, key2, cityNames);
         System.out.println();
-        mapa.printPath(key2, key1, cityNames);
+        map.printPath(key2, key1, cityNames);
         System.out.println();
         double totalLength = path1.get(key2) + path2.get(key1);
         System.out.println(totalLength);
     }
 }
+
